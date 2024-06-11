@@ -53,7 +53,7 @@ int main() {
 
     // Closing sockets
     close(connect_socket);
-    close(sockfd);
+    close(server_socket);
 
     return 0;
 }
