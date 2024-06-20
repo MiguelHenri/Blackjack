@@ -33,26 +33,28 @@ int main() {
         return 1;
     }
 
-    // Connecting 
-    len = sizeof(client_addr);
-    connect_socket = accept(server_socket, (struct sockaddr*)&client_addr, &len);
-    if (connect_socket < 0) {
-        cerr << "Erro ao aceitar a conexão\n";
-        close(server_socket);
-        return 1;
-    }
+    while (true) {
+        // Connecting 
+        len = sizeof(client_addr);
+        connect_socket = accept(server_socket, (struct sockaddr*)&client_addr, &len);
+        if (connect_socket < 0) {
+            cerr << "Erro ao aceitar a conexão\n";
+            close(server_socket);
+            return 1;
+        }
 
-    // Sending char
-    char msg = 'A';
-    if (send(connect_socket, &msg, sizeof(msg), 0) == -1) {
-        cerr << "Erro ao enviar a mensagem\n";
+        // Sending char
+        char msg = 'A';
+        if (send(connect_socket, &msg, sizeof(msg), 0) == -1) {
+            cerr << "Erro ao enviar a mensagem\n";
+            close(connect_socket);
+            close(server_socket);
+            return 1;
+        }
+
+        // Closing connection socket
         close(connect_socket);
-        close(server_socket);
-        return 1;
     }
-
-    // Closing sockets
-    close(connect_socket);
     close(server_socket);
 
     return 0;

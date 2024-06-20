@@ -24,15 +24,16 @@ int main() {
         return 1;
     }
 
-    // Receiving message
+    // Continuously receiving messages
     char msg;
-    if (recv(server_socket, &msg, sizeof(msg), 0) == -1) {
-        cerr << "Erro ao receber a mensagem\n";
-        close(server_socket);
-        return 1;
-    }
+    while (true) {
+        if (recv(server_socket, &msg, sizeof(msg), 0) == -1) {
+            cerr << "Erro ao receber a mensagem\n";
+            break;
+        }
 
-    cout << "Mensagem recebida do servidor: " << msg << endl;
+        cout << "Mensagem recebida do servidor: " << msg << endl;
+    }
 
     // Closing socket
     close(server_socket);
