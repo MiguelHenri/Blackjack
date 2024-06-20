@@ -33,7 +33,8 @@ int main() {
         return 1;
     }
 
-    while (true) {
+    int player_count = 0;
+    while (true && player_count <= 2) {
         // Connecting 
         len = sizeof(client_addr);
         connect_socket = accept(server_socket, (struct sockaddr*)&client_addr, &len);
@@ -41,6 +42,8 @@ int main() {
             cerr << "Erro ao aceitar a conexão\n";
             close(server_socket);
             return 1;
+        } else {
+            player_count++;
         }
 
         // Sending char
