@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-Making tic-tac-toe game using [sockets](https://en.wikipedia.org/wiki/Network_socket)! A project for Computer Networks (SSC0142), ICMC-USP.
+Making a tic-tac-toe game using [sockets](https://en.wikipedia.org/wiki/Network_socket)! A project for Computer Networks (SSC0142), ICMC-USP.
 
 ## Contributors
 
@@ -13,7 +13,7 @@ Making tic-tac-toe game using [sockets](https://en.wikipedia.org/wiki/Network_so
 First, compile the code running the following:
 ```bash
 $ g++ server.cpp -o server
-$ g++ server.cpp -o client
+$ g++ client.cpp -o client
 ```
 
 Run in different terminals:
