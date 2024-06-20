@@ -2,15 +2,15 @@
 
 int main() {
     // Initializing variables
+    vector<int> connect_socket;
     int server_socket = -1;
-    int connect_socket = -1;
     struct sockaddr_in server_addr, client_addr;
     socklen_t len;
 
     // Building socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
-        cerr << "Erro ao criar o socket\n";
+        cerr << "Error creating socket\n";
         return 1;
     }
 
@@ -20,44 +20,51 @@ int main() {
     server_addr.sin_port = htons(PORT);
 
     // Binding address to socket
-    if ((bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr))) != 0) {
-        cerr << "Erro ao associar o endereço ao socket\n";
+    if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
+        cerr << "Error binding address to socket\n";
         close(server_socket);
         return 1;
     }
 
     // Put socket to listen
-    if ((listen(server_socket, 5)) != 0) {
-        cerr << "Erro ao colocar o socket em modo de escuta\n";
+    if (listen(server_socket, 2) != 0) { // We expect at most 2 clients
+        cerr << "Error putting socket in listening mode\n";
         close(server_socket);
         return 1;
     }
 
     int player_count = 0;
-    while (true && player_count <= 2) {
+    while (player_count < NUM_PLAYERS) {
         // Connecting 
         len = sizeof(client_addr);
-        connect_socket = accept(server_socket, (struct sockaddr*)&client_addr, &len);
-        if (connect_socket < 0) {
-            cerr << "Erro ao aceitar a conexão\n";
+        int tmp = accept(server_socket, (struct sockaddr*)&client_addr, &len);
+        if (tmp < 0) {
+            cerr << "Error accepting connection\n";
             close(server_socket);
             return 1;
         } else {
+            connect_socket.push_back(tmp);
             player_count++;
         }
+    }
 
-        // Sending char
-        char msg = 'A';
-        if (send(connect_socket, &msg, sizeof(msg), 0) == -1) {
-            cerr << "Erro ao enviar a mensagem\n";
-            close(connect_socket);
+    char msg = 'A';
+    if (connect_socket.size() > 1) {
+        if (send(connect_socket[1], &msg, sizeof(msg), 0) == -1) {
+            cerr << "Error sending message\n";
+            for (int sock : connect_socket) {
+                close(sock);
+            }
             close(server_socket);
             return 1;
         }
-
-        // Closing connection socket
-        close(connect_socket);
     }
+
+    for (int sock : connect_socket) {
+        close(sock);
+    }
+
+    cout << "Reached the end of the program" << endl;
     close(server_socket);
 
     return 0;
