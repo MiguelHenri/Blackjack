@@ -52,8 +52,8 @@ int main() {
 
     // Starting game
     cout << "Players connected!";
-    
-
+    Dealer dealer;
+    dealer.printDeck();
     
     char msg = 'A';
     if (send(connect_socket[0], &msg, sizeof(msg), 0) == -1) {
