@@ -32,6 +32,7 @@ pair<int, int> Dealer::dealCard() {
     return card; 
 }
 
+// only for debugging
 void Dealer::printDeck() {
     for (const auto& card : deck) {
         cout << card.first << ' ' << card.second << '\n';

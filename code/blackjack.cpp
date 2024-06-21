@@ -51,14 +51,58 @@ bool inGame(const vector<vector<pair<int, int>>>& hands) {
  * @return The winner hand position.
  */
 int checkWinner() {
-    
+    // TO - DO
+    return -1;
 }
 
 /**
- * @brief Prints the blackjack table.
+ * @brief Prints a card into the terminal.
+ * 
+ * @param card The card to be printed.
+ */
+void printCard(const pair<int, int> card) {
+    int rank = card.first;
+    string suit = "";
+
+    switch (card.second) {
+        case 1:
+            suit = "♠";
+            break;
+        case 2:
+            suit = "♥";
+            break;
+        case 3:
+            suit = "♦";
+            break;
+        case 4:
+            suit = "♣";
+            break;
+        default:
+            cout << "Error getting card suit!\n";
+    }
+
+    cout << "(" << rank << ", " << suit << ")";
+}
+
+/**
+ * @brief Prints the blackjack table into the terminal.
  */
 void printTable(const vector<vector<pair<int, int>>>& hands) {
-    
+    cout << "== BLACKJACK GAME USING SOCKETS! ==\n";
+
+    int player = 1;
+    for (const auto& hand : hands) {
+        cout << "Player " << player << " hand:\n";
+
+        // Printing each card
+        for (const auto& card : hand) {
+            printCard(card);
+            cout << ' ';
+        }
+
+        cout << "\n";
+        player++;
+    }
 }
 
 

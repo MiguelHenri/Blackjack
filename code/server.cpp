@@ -1,5 +1,6 @@
 #include "config.h"
 #include "dealer.h"
+#include "blackjack.h"
 
 int main() {
     // Initializing variables
@@ -51,10 +52,18 @@ int main() {
     }
 
     // Starting game
-    cout << "Players connected!";
+    cout << "Players connected! Starting...\n";
     Dealer dealer;
-    dealer.printDeck();
-    
+    vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
+
+    // Debbuging
+    // for (auto& hand : hands) {
+    //     for (int i = 0; i < 3; i++) {
+    //         hand.push_back(dealer.dealCard());
+    //     }
+    // }
+    // printTable(hands);
+
     char msg = 'A';
     if (send(connect_socket[0], &msg, sizeof(msg), 0) == -1) {
         cerr << "Error sending message\n";

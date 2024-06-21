@@ -3,7 +3,8 @@
 
 #include "config.h"
 
+bool inGame(const vector<vector<pair<int, int>>>& hands);
 int calculateHandValue(const vector<pair<int, int>>& hand);
-void printTable(const vector<pair<int, int>>& hand);
+void printTable(const vector<vector<pair<int, int>>>& hands);
 
 #endif

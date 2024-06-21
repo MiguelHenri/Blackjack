@@ -1,13 +1,16 @@
 all: server client
 
-server: server.o dealer.o
-	g++ -o server server.o dealer.o
+server: server.o dealer.o blackjack.o
+	g++ -o server server.o dealer.o blackjack.o
 
-server.o: server.cpp config.h dealer.h
+server.o: server.cpp config.h dealer.h blackjack.h
 	g++ -c server.cpp
 
 dealer.o: dealer.cpp dealer.h
 	g++ -c dealer.cpp
+
+blackjack.o: blackjack.cpp blackjack.h
+	g++ -c blackjack.cpp
 
 client: client.o
 	g++ -o client client.o
