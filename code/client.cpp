@@ -31,6 +31,9 @@ int main() {
             cerr << "Erro ao receber a mensagem\n";
             break;
         }
+        // else{
+        //     cout << "recebi" << endl;
+        // }
 
         cout << "Mensagem recebida do servidor: " << msg << endl;
     }
