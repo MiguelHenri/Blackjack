@@ -12,9 +12,7 @@
 using namespace std;
 
 const int PORT = 8080;
-const int SIZE = 3;
 const int NUM_PLAYERS = 2;
-
-// tic-tac-toe functions
+const int ACE_VALUE = 1;
 
 #endif
