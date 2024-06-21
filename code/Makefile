@@ -1,3 +1,5 @@
+all: server client
+
 server: server.o config.h
 	g++ -o server server.o
 
