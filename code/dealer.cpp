@@ -1,5 +1,4 @@
 #include "dealer.h"
-#include "config.h"
 
 /**
  * @brief Dealer constructor.
@@ -33,26 +32,8 @@ pair<int, int> Dealer::dealCard() {
     return card; 
 }
 
-/**
- * @brief Calculates some player's hand value.
- * 
- * @param hand The player's hand.
- * @return The hand value.
- */
-int Dealer::calculateHandValue(const vector<pair<int, int>>& hand) {
-    int value = 0;
-
-    // Iterate through each card in the hand
-    for (const auto& card : hand) {
-        int rank = card.first; 
-        if (rank > 10) {
-            value += 10;  // Face cards are worth 10
-        } else if (rank == 1) {
-            value += ACE_VALUE;  // Getting ace value from config
-        } else {
-            value += rank;
-        }
+void Dealer::printDeck() {
+    for (const auto& card : deck) {
+        cout << card.first << ' ' << card.second << '\n';
     }
-
-    return value;
 }

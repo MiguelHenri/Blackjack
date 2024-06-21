@@ -5,8 +5,6 @@
 #include <algorithm>
 #include <random>
 
-using namespace std;
-
 class Dealer {
 private:
     vector<pair<int, int>> deck;
@@ -14,7 +12,7 @@ private:
 public:
     Dealer();
     pair<int, int> dealCard();
-    int calculateHandValue(const vector<pair<int, int>>& hand);
+    void printDeck();
 };
 
 #endif

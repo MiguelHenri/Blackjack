@@ -1,6 +1,6 @@
 all: server client
 
-server: server.o config.h
+server: server.o config.h dealer.h
 	g++ -o server server.o
 
 server.o: server.cpp config.h

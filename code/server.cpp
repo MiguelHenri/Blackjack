@@ -1,4 +1,5 @@
 #include "config.h"
+#include "dealer.h"
 
 int main() {
     // Initializing variables
@@ -49,8 +50,12 @@ int main() {
         }
     }
 
-    char msg = 'A';
+    // Starting game
+    cout << "Players connected!";
     
+
+    
+    char msg = 'A';
     if (send(connect_socket[0], &msg, sizeof(msg), 0) == -1) {
         cerr << "Error sending message\n";
         for (int sock : connect_socket) {
