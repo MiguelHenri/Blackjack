@@ -1,22 +1,21 @@
-# Tic-Tac-Toe
+# 🃏 Blackjack
 
-Making a tic-tac-toe game using [sockets](https://en.wikipedia.org/wiki/Network_socket)! A project for Computer Networks (SSC0142), ICMC-USP.
+Making a Blackjack game using [sockets](https://en.wikipedia.org/wiki/Network_socket)! A project for Computer Networks (SSC0142), ICMC-USP.
 
-## Contributors
+## 🤝 Contributors
 
 - [Enzo Yasuo Hirano Harada](https://github.com/Ensuo)
 - [Miguel Bragante Henriques](https://github.com/MiguelHenri)
 - [Leonardo Ishida](https://github.com/LeonardoIshida)
 
-## How to run
+## 🎮 How to run
 
 First, compile the code running the following:
 ```bash
-$ g++ server.cpp -o server
-$ g++ client.cpp -o client
+$ make all
 ```
 
-Run in different terminals:
+Run each player in different terminals:
 ```bash
 $ ./server
 $ ./client
