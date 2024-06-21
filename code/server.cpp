@@ -33,9 +33,10 @@ int main() {
         return 1;
     }
 
+    // Trying to connect with players (clients)
     int player_count = 0;
     while (player_count < NUM_PLAYERS) {
-        // Connecting 
+        cout << "Waiting for " << 2 - player_count << " players to connect...\n";
         len = sizeof(client_addr);
         int tmp = accept(server_socket, (struct sockaddr*)&client_addr, &len);
         if (tmp < 0) {
@@ -49,16 +50,24 @@ int main() {
     }
 
     char msg = 'A';
-    if (connect_socket.size() > 1) {
-        if (send(connect_socket[1], &msg, sizeof(msg), 0) == -1) {
-            cerr << "Error sending message\n";
-            for (int sock : connect_socket) {
-                close(sock);
-            }
-            close(server_socket);
-            return 1;
+    
+    if (send(connect_socket[0], &msg, sizeof(msg), 0) == -1) {
+        cerr << "Error sending message\n";
+        for (int sock : connect_socket) {
+            close(sock);
         }
+        close(server_socket);
+        return 1;
     }
+    if (send(connect_socket[1], &msg, sizeof(msg), 0) == -1) {
+        cerr << "Error sending message\n";
+        for (int sock : connect_socket) {
+            close(sock);
+        }
+        close(server_socket);
+        return 1;
+    }
+    
 
     for (int sock : connect_socket) {
         close(sock);
