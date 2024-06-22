@@ -15,8 +15,14 @@ First, compile the code running the following:
 $ make all
 ```
 
-Run each player in different terminals:
+Then, run server in a terminal:
 ```bash
 $ ./server
+```
+
+Run each player in different terminals:
+```bash
+$ ./client
 $ ./client
 ```
+> Example for 2 players config. 
