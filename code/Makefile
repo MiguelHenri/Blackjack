@@ -1,7 +1,7 @@
 all: server client
 
-server: server.o dealer.o blackjack.o
-	g++ -o server server.o dealer.o blackjack.o
+server: server.o dealer.o blackjack.o config.o
+	g++ -o server server.o dealer.o blackjack.o config.o
 
 server.o: server.cpp config.h dealer.h blackjack.h
 	g++ -c server.cpp
@@ -12,10 +12,13 @@ dealer.o: dealer.cpp dealer.h
 blackjack.o: blackjack.cpp blackjack.h
 	g++ -c blackjack.cpp
 
-client: client.o
-	g++ -o client client.o
+config.o: config.cpp config.h
+	g++ -c config.cpp
 
-client.o: client.cpp config.h
+client: client.o blackjack.o config.o
+	g++ -o client client.o blackjack.o config.o
+
+client.o: client.cpp config.h blackjack.h
 	g++ -c client.cpp
 
 clean:

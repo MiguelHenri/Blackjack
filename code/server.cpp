@@ -12,7 +12,7 @@ int main() {
     // Building socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
-        cerr << "Error creating socket\n";
+        cerr << "Error creating socket.\n";
         return 1;
     }
 
@@ -23,14 +23,14 @@ int main() {
 
     // Binding address to socket
     if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
-        cerr << "Error binding address to socket\n";
+        cerr << "Error binding address to socket.\n";
         close(server_socket);
         return 1;
     }
 
     // Put socket to listen
     if (listen(server_socket, 2) != 0) { // We expect at most 2 clients
-        cerr << "Error putting socket in listening mode\n";
+        cerr << "Error putting socket in listening mode.\n";
         close(server_socket);
         return 1;
     }
@@ -42,7 +42,7 @@ int main() {
         len = sizeof(client_addr);
         int tmp = accept(server_socket, (struct sockaddr*)&client_addr, &len);
         if (tmp < 0) {
-            cerr << "Error accepting connection\n";
+            cerr << "Error accepting connection.\n";
             close(server_socket);
             return 1;
         } else {
@@ -53,41 +53,43 @@ int main() {
 
     // Starting game
     cout << "Players connected! Starting...\n";
-    Dealer dealer;
-    vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
+    Dealer dealer; // Dealer object
+    vector<vector<pair<int, int>>> hands(NUM_PLAYERS); // Players hands
 
-    // Debbuging
-    // for (auto& hand : hands) {
-    //     for (int i = 0; i < 3; i++) {
-    //         hand.push_back(dealer.dealCard());
+    for (auto& hand : hands) {
+        for (int i = 0; i < 3; i++) {
+            hand.push_back(dealer.dealCard());
+        }
+    }
+    printTable(hands);
+
+    string data = serialize(hands);
+
+    if (send(connect_socket[0], data.c_str(), data.size(), 0) < 0) {
+        cerr << "Error sending message.\n";
+        for (int sock : connect_socket) {
+            close(sock);
+        }
+        close(server_socket);
+        return 1;
+    } else {
+        cout << "Message sent.\n";
+    }
+    // if (send(connect_socket[1], &msg, sizeof(msg), 0) == -1) {
+    //     cerr << "Error sending message\n";
+    //     for (int sock : connect_socket) {
+    //         close(sock);
     //     }
+    //     close(server_socket);
+    //     return 1;
     // }
-    // printTable(hands);
-
-    char msg = 'A';
-    if (send(connect_socket[0], &msg, sizeof(msg), 0) == -1) {
-        cerr << "Error sending message\n";
-        for (int sock : connect_socket) {
-            close(sock);
-        }
-        close(server_socket);
-        return 1;
-    }
-    if (send(connect_socket[1], &msg, sizeof(msg), 0) == -1) {
-        cerr << "Error sending message\n";
-        for (int sock : connect_socket) {
-            close(sock);
-        }
-        close(server_socket);
-        return 1;
-    }
     
 
     for (int sock : connect_socket) {
         close(sock);
     }
 
-    cout << "Reached the end of the program" << endl;
+    cout << "Reached the end of the program." << endl;
     close(server_socket);
 
     return 0;

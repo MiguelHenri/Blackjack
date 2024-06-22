@@ -1,4 +1,5 @@
 #include "config.h"
+#include "blackjack.h"
 
 int main() {
     // Initializing variables
@@ -8,7 +9,7 @@ int main() {
     // Building socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
-        cerr << "Erro ao criar o socket\n";
+        cerr << "Error creating socket.\n";
         return 1;
     }
 
@@ -19,23 +20,27 @@ int main() {
 
     // Connecting to server
     if (connect(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
-        cerr << "Erro ao conectar ao servidor\n";
+        cerr << "Error connecting to server.\n";
         close(server_socket);
         return 1;
     }
 
-    // Continuously receiving messages
-    char msg;
-    while (true) {
-        if (recv(server_socket, &msg, sizeof(msg), 0) == -1) {
-            cerr << "Erro ao receber a mensagem\n";
-            break;
-        }
-        // else{
-        //     cout << "recebi" << endl;
-        // }
+    // Receiving players hands
+    vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
+    char buffer[1024];
+    ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+    if (bytesRead < 0) {
+        cerr << "Error receiving message.\n";
+        return 1;
+    } else {
+        cout << "Message received.\n";
 
-        cout << "Mensagem recebida do servidor: " << msg << endl;
+        buffer[bytesRead] = '\0';
+        string data(buffer, bytesRead);
+
+        hands = deserialize(data);
+
+        printTable(hands);
     }
 
     // Closing socket
