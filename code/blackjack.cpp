@@ -1,5 +1,7 @@
 #include "blackjack.h"
 
+// TO-DO: guarantee only one "winner" / remove losers
+
 /**
  * @brief Calculates some player's hand value.
  * 
@@ -36,7 +38,7 @@ bool inGame(const vector<vector<pair<int, int>>>& hands) {
     // Iterates through all players hands
     for (const auto& hand : hands) {
         int value = calculateHandValue(hand);
-        if (value >= 21) {
+        if (value >= 21) { // currently checking if one lost
             check = false;
         }
     }

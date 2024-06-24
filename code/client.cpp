@@ -25,23 +25,28 @@ int main() {
         return 1;
     }
 
-    // Receiving players hands
+    // Running game
+    // Initializing players hands
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
-    char buffer[1024];
-    ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
-    if (bytesRead < 0) {
-        cerr << "Error receiving message.\n";
-        return 1;
-    } else {
-        cout << "Message received.\n";
+    do {
+        char buffer[1024];
+        // TO-DO: players should be able to send a message telling 
+        // if they want to retrieve a card or not.
+        ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+        if (bytesRead < 0) {
+            cerr << "Error receiving message.\n";
+            return 1;
+        } else {
+            cout << "Message received.\n";
 
-        buffer[bytesRead] = '\0';
-        string data(buffer, bytesRead);
+            buffer[bytesRead] = '\0';
+            string data(buffer, bytesRead);
 
-        hands = deserialize(data);
+            hands = deserialize(data);
 
-        printTable(hands);
-    }
+            printTable(hands);
+        }
+    } while (inGame(hands));
 
     // Closing socket
     close(server_socket);

@@ -11,6 +11,8 @@ int main() {
 
     // Building socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    // AF_INET: defines IPV4 protocol.
+    // SOCK_STREAM: defines TCP socket.
     if (server_socket == -1) {
         cerr << "Error creating socket.\n";
         return 1;
@@ -56,34 +58,39 @@ int main() {
     Dealer dealer; // Dealer object
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS); // Players hands
 
+    // Initializing players hands with one cards
     for (auto& hand : hands) {
-        for (int i = 0; i < 3; i++) {
-            hand.push_back(dealer.dealCard());
-        }
+        hand.push_back(dealer.dealCard());
     }
     printTable(hands);
 
-    string data = serialize(hands);
-
-    if (send(connect_socket[0], data.c_str(), data.size(), 0) < 0) {
-        cerr << "Error sending message.\n";
-        for (int sock : connect_socket) {
-            close(sock);
+    // Running game
+    do {
+        // TO-DO: players should tell if they want to retrieve a card.
+        // Retrieving new cards for each player
+        for (auto& hand : hands) {
+            hand.push_back(dealer.dealCard());
         }
-        close(server_socket);
-        return 1;
-    } else {
-        cout << "Message sent.\n";
-    }
-    // if (send(connect_socket[1], &msg, sizeof(msg), 0) == -1) {
-    //     cerr << "Error sending message\n";
-    //     for (int sock : connect_socket) {
-    //         close(sock);
-    //     }
-    //     close(server_socket);
-    //     return 1;
-    // }
-    
+
+        // Serializing players hands data
+        string data = serialize(hands);
+
+        // Sending players hands to the players themselves
+        for (int i=0; i<NUM_PLAYERS; i++) {
+            if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
+                cerr << "Error sending message to player " << i << ".\n";
+                for (int sock : connect_socket) {
+                    close(sock);
+                }
+                close(server_socket);
+                return 1;
+            } else {
+                cout << "Message sent to player " << i << ".\n";
+            }
+        }
+    } while (inGame(hands)); // Always checking if game ended
+
+    // TODO: check winner
 
     for (int sock : connect_socket) {
         close(sock);
