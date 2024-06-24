@@ -90,7 +90,7 @@ void printCard(const pair<int, int> card) {
  * @brief Prints the blackjack table into the terminal.
  */
 void printTable(const vector<vector<pair<int, int>>>& hands) {
-    cout << "== BLACKJACK GAME USING SOCKETS! ==\n";
+    cout << "===== BLACKJACK GAME USING SOCKETS! =====\n";
 
     int player = 1;
     for (const auto& hand : hands) {
@@ -105,6 +105,8 @@ void printTable(const vector<vector<pair<int, int>>>& hands) {
         cout << "\n";
         player++;
     }
+
+    cout << "=========================================\n";
 }
 
 

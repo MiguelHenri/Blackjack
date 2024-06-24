@@ -29,15 +29,44 @@ int main() {
     // Initializing players hands
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
     do {
+        cout << "Keep waiting for your turn...\n";
+        // Checking if it's our turn
+        char status;
+        char msg;
+        if (recv(server_socket, &status, sizeof(status), 0) == -1) {
+            cerr << "Error receiving server status.\n";
+            close(server_socket);
+            return 1;
+        }
+        // Ok! It's our turn
+        cout << "Server status: " << status << "\n";
+        if (status != 's') { // Ops... Something wrong.
+            cerr << "Unhandled error receiving server status.\n";
+            close(server_socket);
+            return 1;
+        } else { // Ok! Let's play!
+            cout << "Do you want to retrieve a new card? [y/n]\n";
+            cin >> msg;
+            // Sending our answer to server
+            if (send(server_socket, &msg, sizeof(msg), 0) == -1) {
+                cerr << "Error sending answer to server.\n";
+                close(server_socket);
+                return 1;
+            }
+        }
+
+        // Now, we're waiting other players turn
+        cout << "Waiting for other players turn...\n";
+
+        // Getting the game current status from server and priting table
         char buffer[1024];
-        // TO-DO: players should be able to send a message telling 
-        // if they want to retrieve a card or not.
         ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
         if (bytesRead < 0) {
             cerr << "Error receiving message.\n";
+            close(server_socket);
             return 1;
         } else {
-            cout << "Message received.\n";
+            cout << "Blackjack table received!\n";
 
             buffer[bytesRead] = '\0';
             string data(buffer, bytesRead);
