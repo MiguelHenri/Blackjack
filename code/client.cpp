@@ -25,10 +25,34 @@ int main() {
         return 1;
     }
 
-    // Running game
+    // Starting game
+    cout << "Waiting for other players...\n";
     // Initializing players hands
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
+    int turn = 1;
     do {
+        // Getting the game current status from server and priting table
+        char buffer[1024];
+        ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+        if (bytesRead < 0) {
+            cerr << "Error receiving message.\n";
+            close(server_socket);
+            return 1;
+        } else {
+            buffer[bytesRead] = '\0';
+            string data(buffer, bytesRead);
+
+            hands = deserialize(data);
+
+            printTable(hands, turn);
+            turn++;
+        }
+
+        // TODO: maybe we can clear the terminal?
+
+        // Always checking if game ended
+        if (!inGame(hands)) break;
+
         cout << "Keep waiting for your turn...\n";
         // Checking if it's our turn
         char status;
@@ -39,8 +63,7 @@ int main() {
             return 1;
         }
         // Ok! It's our turn
-        cout << "Server status: " << status << "\n";
-        if (status != 's') { // Ops... Something wrong.
+        if (status != 's') { // Oops... Something wrong.
             cerr << "Unhandled error receiving server status.\n";
             close(server_socket);
             return 1;
@@ -57,25 +80,7 @@ int main() {
 
         // Now, we're waiting other players turn
         cout << "Waiting for other players turn...\n";
-
-        // Getting the game current status from server and priting table
-        char buffer[1024];
-        ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
-        if (bytesRead < 0) {
-            cerr << "Error receiving message.\n";
-            close(server_socket);
-            return 1;
-        } else {
-            cout << "Blackjack table received!\n";
-
-            buffer[bytesRead] = '\0';
-            string data(buffer, bytesRead);
-
-            hands = deserialize(data);
-
-            printTable(hands);
-        }
-    } while (inGame(hands));
+    } while (true);
 
     // Closing socket
     close(server_socket);

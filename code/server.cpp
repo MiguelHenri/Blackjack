@@ -59,17 +59,37 @@ int main() {
     Dealer dealer; // Dealer object
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS); // Players hands
 
-    // Initializing players hands with one card
+    // Initializing players hands with two cards
     for (auto& hand : hands) {
         hand.push_back(dealer.dealCard());
+        hand.push_back(dealer.dealCard());
     }
-    printTable(hands);
 
     // Running game
     do {
+        // Serializing players hands data
+        string data = serialize(hands);
+
+        // Sending players hands to the players themselves
+        for (int i=0; i<NUM_PLAYERS; i++) {
+            if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
+                cerr << "Error sending table to player " << i << ".\n";
+                for (int sock : connect_socket) {
+                    close(sock);
+                }
+                close(server_socket);
+                return 1;
+            } else {
+                cout << "Table sent to player " << i << ".\n";
+            }
+        }
+
+        // Always checking if game ended before new rounds
+        if (!inGame(hands)) break;
+
         // Asking players if thy want to retrieve a new card.
         for (int i=0; i<NUM_PLAYERS; i++) {
-            char msg = 's';
+            char msg = 's'; // will be used to tell the player WHO they are
             char response;
             // Sending message indicating server is ready to receive message
             if (send(connect_socket[i], &msg, sizeof(msg), 0) == -1) {
@@ -87,6 +107,7 @@ int main() {
                 }
                 return 1;
             }
+            cout << "Message sent to player: " << i << ".\n";
             // Checking player answer
             if (response == 'y' || response == 'Y') {
                 // Retrieving new card to player hand
@@ -95,23 +116,7 @@ int main() {
             // TODO: add logic for other cases
         }
 
-        // Serializing players hands data
-        string data = serialize(hands);
-
-        // Sending players hands to the players themselves
-        for (int i=0; i<NUM_PLAYERS; i++) {
-            if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
-                cerr << "Error sending table to player " << i << ".\n";
-                for (int sock : connect_socket) {
-                    close(sock);
-                }
-                close(server_socket);
-                return 1;
-            } else {
-                cout << "Message sent to player " << i << ".\n";
-            }
-        }
-    } while (inGame(hands)); // Always checking if game ended
+    } while (true);
 
     // TODO: check and inform winner
 
@@ -119,7 +124,7 @@ int main() {
         close(sock);
     }
 
-    cout << "Reached the end of the program." << endl;
+    cout << "Reached the end of the game." << endl;
     close(server_socket);
 
     return 0;
