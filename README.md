@@ -8,6 +8,11 @@ Making a Blackjack game using [sockets](https://en.wikipedia.org/wiki/Network_so
 - [Miguel Bragante Henriques](https://github.com/MiguelHenri)
 - [Leonardo Ishida](https://github.com/LeonardoIshida)
 
+## User Manual
+
+You can access a detailed the User Manual [here](https://docs.google.com/document/d/1Bcog3MytZmwKFbEZSdTOFddpklbQHotmh_SQs0gWAjg/edit?usp=sharing).
+> Currently only in Portuguese, 🇧🇷.
+
 ## 🎮 How to run
 
 First, compile the code running the following:
