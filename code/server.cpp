@@ -91,6 +91,7 @@ int main() {
         for (int i=0; i<NUM_PLAYERS; i++) {
             char msg = 's'; // will be used to tell the player WHO they are
             char response;
+
             // Sending message indicating server is ready to receive message
             if (send(connect_socket[i], &msg, sizeof(msg), 0) == -1) {
                 cerr << "Error asking player " << i << ".\n";
@@ -109,7 +110,7 @@ int main() {
             }
             cout << "Message sent to player: " << i << ".\n";
             // Checking player answer
-            if (response == 'y' || response == 'Y') {
+            if (tolower(response) == 'y') {
                 // Retrieving new card to player hand
                 hands[i].push_back(dealer.dealCard());
             }
