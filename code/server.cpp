@@ -58,6 +58,8 @@ int main() {
     cout << "Players connected! Starting...\n";
     Dealer dealer; // Dealer object
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS); // Players hands
+    vector<bool> still_playing(NUM_PLAYERS, true);
+    bool its_over = false;
 
     // Initializing players hands with two cards
     for (auto& hand : hands) {
@@ -85,10 +87,12 @@ int main() {
         }
 
         // Always checking if game ended before new rounds
-        if (!inGame(hands)) break;
+        // if (!inGame(hands)) break;
 
         // Asking players if thy want to retrieve a new card.
         for (int i=0; i<NUM_PLAYERS; i++) {
+            if (!still_playing[i]) continue;
+
             char msg = 's'; // will be used to tell the player WHO they are
             char response;
 
@@ -110,16 +114,35 @@ int main() {
             }
             cout << "Message sent to player: " << i << ".\n";
             // Checking player answer
-            if (tolower(response) == 'y') {
+            if (response == 'y' || response == 'Y') {
                 // Retrieving new card to player hand
                 hands[i].push_back(dealer.dealCard());
             }
-            // TODO: add logic for other cases
+            else if (response == 'n' || response == 'N'){
+                still_playing[i] = false;
+            }
         }
 
-    } while (true);
+        // All values in more_cards are false
+        // get out of the game loop
+        if (all_of(still_playing.begin(), still_playing.end(), [](bool v) { 
+            return v == false; })) {
+            its_over = true;
+        }
+
+    } while (!its_over);
 
     // TODO: check and inform winner
+    int winner = checkWinner(hands);
+    cout << winner << endl;
+    string winner_str = to_string(winner);
+
+    // for (int sock : connect_socket) {
+    //     if (send(sock, winner_str.c_str(), winner_str.size(), 0) < 0) {
+    //         cerr << "Error sending winner id.\n";
+    //     }
+    // }
+    
 
     for (int sock : connect_socket) {
         close(sock);
