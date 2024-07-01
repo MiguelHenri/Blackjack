@@ -74,6 +74,8 @@ int main() {
 
         // Sending players hands to the players themselves
         for (int i=0; i<NUM_PLAYERS; i++) {
+            if (!still_playing[i]) continue;
+
             if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
                 cerr << "Error sending table to player " << i << ".\n";
                 for (int sock : connect_socket) {
@@ -132,16 +134,21 @@ int main() {
 
     } while (!its_over);
 
-    // TODO: check and inform winner
+    // message to inform the winner
     int winner = checkWinner(hands);
-    cout << winner << endl;
-    string winner_str = to_string(winner);
+    string winner_str = "Player " + to_string(winner) + " has won the game";
 
-    // for (int sock : connect_socket) {
-    //     if (send(sock, winner_str.c_str(), winner_str.size(), 0) < 0) {
-    //         cerr << "Error sending winner id.\n";
-    //     }
-    // }
+    // flag to announce that 
+    char jk = 'o';
+    for (int sock : connect_socket) {
+        if (send(sock, &jk, sizeof(jk), 0) < 0) {
+            cerr << "Error sending end game flag.\n";
+        }
+
+        if (send(sock, winner_str.c_str(), winner_str.size(), 0) < 0) {
+            cerr << "Error sending winner id.\n";
+        }
+    }
     
 
     for (int sock : connect_socket) {

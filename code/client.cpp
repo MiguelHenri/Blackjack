@@ -29,29 +29,32 @@ int main() {
     cout << "Waiting for other players...\n";
     // Initializing players hands
     vector<vector<pair<int, int>>> hands(NUM_PLAYERS);
+    bool continue_playing = true;
     int turn = 1;
     do {
         // Getting the game current status from server and priting table
         char buffer[1024];
-        ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
-        if (bytesRead < 0) {
-            cerr << "Error receiving message.\n";
-            close(server_socket);
-            return 1;
-        } else {
-            buffer[bytesRead] = '\0';
-            string data(buffer, bytesRead);
+        if (continue_playing) {
+            ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+            if (bytesRead < 0) {
+                cerr << "Error receiving message.\n";
+                close(server_socket);
+                return 1;
+            } else {
+                buffer[bytesRead] = '\0';
+                string data(buffer, bytesRead);
 
-            hands = deserialize(data);
+                hands = deserialize(data);
 
-            printTable(hands, turn);
-            turn++;
+                printTable(hands, turn);
+                turn++;
+            }
         }
 
         // TODO: maybe we can clear the terminal?
 
         // Always checking if game ended
-        if (!inGame(hands)) break;
+        // if (!inGame(hands)) break;
 
         cout << "Keep waiting for your turn...\n";
         // Checking if it's our turn
@@ -62,6 +65,24 @@ int main() {
             close(server_socket);
             return 1;
         }
+        
+        if (status == 'o') {
+            cout << "consegui receber msg de final" << endl;
+
+            ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+            if (bytesRead < 0) {
+                cerr << "Error receiving message.\n";
+                close(server_socket);
+                return 1;
+            } else {
+                buffer[bytesRead] = '\0';
+                string data(buffer, bytesRead);
+                
+                cout << data << endl;
+            }
+            break;
+        }
+
         // Ok! It's our turn
         if (status != 's') { // Oops... Something wrong.
             cerr << "Unhandled error receiving server status.\n";
@@ -70,6 +91,8 @@ int main() {
         } else { // Ok! Let's play!
             cout << "Do you want to retrieve a new card? [y/n]\n";
             cin >> msg;
+            if (msg == 'n' || msg == 'N') continue_playing = false;
+
             // Sending our answer to server
             if (send(server_socket, &msg, sizeof(msg), 0) == -1) {
                 cerr << "Error sending answer to server.\n";
