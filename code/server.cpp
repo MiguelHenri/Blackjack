@@ -121,6 +121,7 @@ int main() {
             if (response == 'y' || response == 'Y') {
                 // Retrieving new card to player hand
                 hands[i].push_back(dealer.dealCard());
+                still_playing[i] = true;
             }
             else if (response == 'n' || response == 'N'){
                 still_playing[i] = false;
@@ -138,7 +139,13 @@ int main() {
 
     // message to inform the winner
     int winner = checkWinner(hands);
-    string winner_str = "Player " + to_string(winner) + " has won the game";
+
+    string winner_str;
+    if (winner != -1) {
+        winner_str = "Player " + to_string(winner) + " has won the game";
+    } else {
+        winner_str = "Nenhum jogador venceu";
+    }
 
     // flag to announce that 
     char jk = 'o';

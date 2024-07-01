@@ -61,13 +61,15 @@ int checkWinner(vector<vector<pair<int, int>>>& hands) {
         const auto& hand = hands[i];
         int hand_value = calculateHandValue(hand);
 
-        if (hand_value > winner.second) {
+        if (hand_value <= 21 && hand_value > winner.second) {
             winner.first = i;
             winner.second = hand_value;
         }
     }
 
-    return winner.first + 1; // +1 beacuse its 0 indexed
+    return winner.first != -1 
+    ? winner.first +1 // +1 beacuse its 0 indexed
+    : -1 ; // no winner
 }
 
 /**
