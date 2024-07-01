@@ -76,8 +76,25 @@ int checkWinner(vector<vector<pair<int, int>>>& hands) {
  * @param card The card to be printed.
  */
 void printCard(const pair<int, int> card) {
-    int rank = card.first;
+    string rank = "";
     string suit = "";
+
+    switch (card.first) {
+        case 1:
+            rank = "A";
+            break;
+        case 11:
+            rank = "J";
+            break;
+        case 12:
+            rank = "Q";
+            break;
+        case 13:
+            rank = "K";
+            break;
+        default:
+            rank = to_string(card.first);
+    }
 
     switch (card.second) {
         case 1:
