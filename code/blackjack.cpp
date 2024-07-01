@@ -52,7 +52,7 @@ bool inGame(const vector<vector<pair<int, int>>>& hands) {
  * @param hands The players' hands.
  * @return The winner hand position.
  */
-int checkWinner(const vector<pair<int, int>>& hand) {
+int checkWinner(vector<vector<pair<int, int>>>& hands) {
     // winner id, hand value
     pair<int, int> winner(make_pair(-1, -1));
 
@@ -60,7 +60,7 @@ int checkWinner(const vector<pair<int, int>>& hand) {
     for (size_t i = 0; i < hands.size(); ++i) {
         const auto& hand = hands[i];
         int hand_value = calculateHandValue(hand);
-        
+
         if (hand_value > winner.second) {
             winner.first = i;
             winner.second = hand_value;
@@ -97,6 +97,14 @@ void printCard(const pair<int, int> card) {
     }
 
     cout << "(" << rank << ", " << suit << ")";
+}
+
+void printPlayerHand(const vector<pair<int, int>>& hand) {
+    // Printing each card
+    for (const auto& card : hand) {
+        printCard(card);
+        cout << ' ';
+    }
 }
 
 /**
