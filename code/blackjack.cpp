@@ -67,7 +67,7 @@ int checkWinner(vector<vector<pair<int, int>>>& hands) {
         }
     }
 
-    return winner.first;
+    return winner.first + 1; // +1 beacuse its 0 indexed
 }
 
 /**

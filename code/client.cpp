@@ -51,8 +51,6 @@ int main() {
             }
         }
 
-        // TODO: maybe we can clear the terminal?
-
         // Always checking if game ended
         // if (!inGame(hands)) break;
 
@@ -83,12 +81,14 @@ int main() {
             break;
         }
 
+
         // Ok! It's our turn
-        if (status != 's') { // Oops... Something wrong.
+        if (status < '0' || status > '9') { // Oops... Something wrong.
             cerr << "Unhandled error receiving server status.\n";
             close(server_socket);
             return 1;
         } else { // Ok! Let's play!
+            cout << "Hi Player " << status - '0' + 1 << "!\n";
             cout << "Do you want to retrieve a new card? [y/n]\n";
             cin >> msg;
             if (msg == 'n' || msg == 'N') continue_playing = false;

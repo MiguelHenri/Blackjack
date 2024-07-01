@@ -77,14 +77,14 @@ int main() {
             if (!still_playing[i]) continue;
 
             if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
-                cerr << "Error sending table to player " << i << ".\n";
+                cerr << "Error sending table to player " << i + 1 << ".\n";
                 for (int sock : connect_socket) {
                     close(sock);
                 }
                 close(server_socket);
                 return 1;
             } else {
-                cout << "Table sent to player " << i << ".\n";
+                cout << "Table sent to player " << i + 1<< ".\n";
             }
         }
 
@@ -93,14 +93,16 @@ int main() {
 
         // Asking players if thy want to retrieve a new card.
         for (int i=0; i<NUM_PLAYERS; i++) {
+            // If they are not playing, skip this step
             if (!still_playing[i]) continue;
 
-            char msg = 's'; // will be used to tell the player WHO they are
+            // msg tells the players who they are
+            char msg = '0' + i;
             char response;
 
             // Sending message indicating server is ready to receive message
             if (send(connect_socket[i], &msg, sizeof(msg), 0) == -1) {
-                cerr << "Error asking player " << i << ".\n";
+                cerr << "Error asking player " << i + 1 << ".\n";
                 for (int sock : connect_socket) {
                     close(sock);
                 }
@@ -108,13 +110,13 @@ int main() {
             }
             // Receiving player message
             if (recv(connect_socket[i], &response, sizeof(response), 0) == -1) {
-                cerr << "Error receiving player " << i << " response.\n";
+                cerr << "Error receiving player " << i + 1 << " response.\n";
                 for (int sock : connect_socket) {
                     close(sock);
                 }
                 return 1;
             }
-            cout << "Message sent to player: " << i << ".\n";
+            cout << "Message sent to player: " << i + 1 << ".\n";
             // Checking player answer
             if (response == 'y' || response == 'Y') {
                 // Retrieving new card to player hand
