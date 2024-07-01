@@ -12,7 +12,6 @@ private:
 public:
     Dealer();
     pair<int, int> dealCard();
-    void printDeck();
 };
 
 #endif
