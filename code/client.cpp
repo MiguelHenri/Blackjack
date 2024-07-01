@@ -34,7 +34,7 @@ int main() {
     do {
         // Getting the game current status from server and priting table
         char buffer[1024];
-        if (continue_playing) {
+        // if (continue_playing) {
             ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
             if (bytesRead < 0) {
                 cerr << "Error receiving message.\n";
@@ -49,7 +49,7 @@ int main() {
                 printTable(hands, turn);
                 turn++;
             }
-        }
+        // }
 
         // Always checking if game ended
         // if (!inGame(hands)) break;
@@ -77,6 +77,11 @@ int main() {
                 string data(buffer, bytesRead);
                 
                 cout << data << endl;
+            }
+
+            const char* ack = "Acknowledged";
+            if (send(server_socket, ack, strlen(ack), 0) < 0) {
+                cerr << "Error sending acknowledgement.\n";
             }
             break;
         }

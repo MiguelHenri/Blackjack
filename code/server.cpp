@@ -74,7 +74,6 @@ int main() {
 
         // Sending players hands to the players themselves
         for (int i=0; i<NUM_PLAYERS; i++) {
-            if (!still_playing[i]) continue;
 
             if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
                 cerr << "Error sending table to player " << i + 1 << ".\n";
@@ -88,13 +87,8 @@ int main() {
             }
         }
 
-        // Always checking if game ended before new rounds
-        // if (!inGame(hands)) break;
-
         // Asking players if thy want to retrieve a new card.
         for (int i=0; i<NUM_PLAYERS; i++) {
-            // If they are not playing, skip this step
-            if (!still_playing[i]) continue;
 
             // msg tells the players who they are
             char msg = '0' + i;
@@ -149,13 +143,28 @@ int main() {
 
     // flag to announce that 
     char jk = 'o';
-    for (int sock : connect_socket) {
-        if (send(sock, &jk, sizeof(jk), 0) < 0) {
-            cerr << "Error sending end game flag.\n";
-        }
+    int count = 0;
+    while (count < NUM_PLAYERS) { 
+        for (int sock : connect_socket) {
+            string game_over = "The game is over";
+            if (send(sock, game_over.c_str(), game_over.size(), 0) < 0) {
+                cerr << "Error sending another message.\n";
+            }
 
-        if (send(sock, winner_str.c_str(), winner_str.size(), 0) < 0) {
-            cerr << "Error sending winner id.\n";
+            if (send(sock, &jk, sizeof(jk), 0) < 0) {
+                cerr << "Error sending end game flag.\n";
+            }
+
+            if (send(sock, winner_str.c_str(), winner_str.size(), 0) < 0) {
+                cerr << "Error sending winner id.\n";
+            }
+
+            char ack[1024];
+            if (recv(sock, ack, sizeof(ack), 0) < 0) {
+                cerr << "Error receiving acknowledgement.\n";
+            } else {
+                count++;
+            }
         }
     }
     
