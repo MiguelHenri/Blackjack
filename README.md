@@ -1,5 +1,5 @@
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MiguelHenri/Tic-Tac-Toe/blob/feat/blackjack/README.md)
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/MiguelHenri/Tic-Tac-Toe/blob/feat/blackjack/README.pt-br.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MiguelHenri/Tic-Tac-Toe/blob/main/README.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/MiguelHenri/Tic-Tac-Toe/blob/main/README.pt-br.md)
 # 🃏 Blackjack
 
 Creating a Blackjack game using [sockets](https://en.wikipedia.org/wiki/Network_socket)! A project for Computer Networks (SSC0142), ICMC-USP.
