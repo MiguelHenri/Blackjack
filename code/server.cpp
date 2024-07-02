@@ -83,7 +83,6 @@ int main() {
         // Sending players hands to the players themselves
         // or informing the game ended
         for (int i=0; i<NUM_PLAYERS; i++) {
-
             if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
                 cerr << "Error sending table to player " << i + 1 << ".\n";
                 for (int sock : connect_socket) {
@@ -149,11 +148,22 @@ int main() {
 
     } while (true);
 
-    // Message to inform the winner
-    int winner = checkWinner(hands);
-
-    // Informing players who won!
+    // Game ended!
+    string data = serialize(hands); // Informing the hands
+    int winner = checkWinner(hands); // Message to inform the winner
     for (int i=0; i<NUM_PLAYERS; i++) {
+        // Sending the table one last time:
+        if (send(connect_socket[i], data.c_str(), data.size(), 0) < 0) {
+            cerr << "Error sending table to player " << i + 1 << ".\n";
+            for (int sock : connect_socket) {
+                close(sock);
+            }
+            close(server_socket);
+            return 1;
+        } else {
+            cout << "Table sent to player " << i + 1<< ".\n";
+        }
+        // Informing players who won!
         if (send(connect_socket[i], &winner, sizeof(winner), 0) == -1) {
             cerr << "Error senting winner to player " << i + 1 << ".\n";
             for (int sock : connect_socket) {

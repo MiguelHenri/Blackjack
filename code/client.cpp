@@ -90,7 +90,20 @@ int main() {
     } while (true);
 
     // We reached the end of the game!
-    // Getting winner from server
+    // Getting the table one last time
+    char buffer[1024];
+    ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+    if (bytesRead < 0) {
+        cerr << "Error receiving message.\n";
+        close(server_socket);
+        return 1;
+    } else {
+        buffer[bytesRead] = '\0';
+        string data(buffer, bytesRead);
+        hands = deserialize(data);
+        printTable(hands, turn);
+    }
+    // Getting the winner from server
     int winner;
     if (recv(server_socket, &winner, sizeof(winner), 0) == -1) {
         cerr << "Error receiving winner from server.\n";
