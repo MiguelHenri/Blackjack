@@ -27,23 +27,20 @@ int calculateHandValue(const vector<pair<int, int>>& hand) {
 }
 
 /**
- * @brief Checks if the game is ongoing.
+ * @brief Checks if all players lost.
  * 
  * @param hands The players' hands.
- * @return True if game is ongoing, false if not.
+ * @return True if all players lost, false if not.
  */
-bool inGame(const vector<vector<pair<int, int>>>& hands) {
-    bool check = true;
+bool allLost(const vector<vector<pair<int, int>>>& hands) {
 
-    // Iterates through all players hands
     for (const auto& hand : hands) {
         int value = calculateHandValue(hand);
-        if (value >= 21) { // currently checking if one lost
-            check = false;
+        if (value <= 21) {
+            return false;
         }
     }
-
-    return check;
+    return true;
 }
 
 /**

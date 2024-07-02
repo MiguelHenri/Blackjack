@@ -71,8 +71,9 @@ int main() {
     do {
         string data;
         // Checking if the Game ended!
-        if (its_over) {
+        if (its_over || allLost(hands)) {
             // We still need to inform the players
+            its_over = true;
             data = "GAME OVER";
         }
         else { // Serializing players hands data
@@ -130,6 +131,13 @@ int main() {
             }
             else if (response == 'n' || response == 'N'){
                 still_playing[i] = false;
+            }
+            else {
+                cerr << "Bad player " << i + 1 << " response.\n";
+                for (int sock : connect_socket) {
+                    close(sock);
+                }
+                return 1;
             }
         }
 
