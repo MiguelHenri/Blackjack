@@ -34,25 +34,27 @@ int main() {
     do {
         // Getting the game current status from server and priting table
         char buffer[1024];
-        // if (continue_playing) {
-            ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
-            if (bytesRead < 0) {
-                cerr << "Error receiving message.\n";
-                close(server_socket);
-                return 1;
-            } else {
-                buffer[bytesRead] = '\0';
-                string data(buffer, bytesRead);
+        ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
+        if (bytesRead < 0) {
+            cerr << "Error receiving message.\n";
+            close(server_socket);
+            return 1;
+        } else {
+            buffer[bytesRead] = '\0';
+            string data(buffer, bytesRead);
 
+            // Checking if game is over
+            if (strncmp(data.c_str(), "GAME OVER", 9) == 0) {
+                // reached the end of the game
+                break;
+            }
+            else {
                 hands = deserialize(data);
 
                 printTable(hands, turn);
                 turn++;
             }
-        // }
-
-        // Always checking if game ended
-        // if (!inGame(hands)) break;
+        }
 
         cout << "Keep waiting for your turn...\n";
         // Checking if it's our turn
@@ -63,29 +65,6 @@ int main() {
             close(server_socket);
             return 1;
         }
-        
-        if (status == 'o') {
-            cout << "consegui receber msg de final" << endl;
-
-            ssize_t bytesRead = recv(server_socket, buffer, sizeof(buffer), 0);
-            if (bytesRead < 0) {
-                cerr << "Error receiving message.\n";
-                close(server_socket);
-                return 1;
-            } else {
-                buffer[bytesRead] = '\0';
-                string data(buffer, bytesRead);
-                
-                cout << data << endl;
-            }
-
-            const char* ack = "Acknowledged";
-            if (send(server_socket, ack, strlen(ack), 0) < 0) {
-                cerr << "Error sending acknowledgement.\n";
-            }
-            break;
-        }
-
 
         // Ok! It's our turn
         if (status < '0' || status > '9') { // Oops... Something wrong.
@@ -110,6 +89,22 @@ int main() {
         cout << "Waiting for other players turn...\n";
     } while (true);
 
+    // We reached the end of the game!
+    // Getting winner from server
+    int winner;
+    if (recv(server_socket, &winner, sizeof(winner), 0) == -1) {
+        cerr << "Error receiving winner from server.\n";
+        close(server_socket);
+        return 1;
+    }
+
+    if (winner != -1) {
+        cout << "Player " << to_string(winner) << " has won the game!\n";
+    } else {
+        cout << "No one has won the game :(\n";
+    }
+
+    cout << "GAME OVER!\n";
     // Closing socket
     close(server_socket);
 
